@@ -22,7 +22,7 @@ final class HomeCoordinator {
 
 extension HomeCoordinator: Coordinator {
     // This provies the initial view for the screen
-    func start() -> some View {
+    @ViewBuilder func start() -> some View {
         HomeView(viewModel: viewModel, coordinator: self)
     }
 
@@ -46,19 +46,21 @@ extension HomeCoordinator: Coordinator {
 
     // Depending on the selected destination, the view is provied here
     // This method will be responsible for returning the view, but it is best to make it lazy.
-    // If it is not lazy then the `body` property will be called before the view appears on the new screen
-    func view(for destination: Destination) -> AnyView {
+    // If it is not lazy then the `body` property will be called before the view appears on
+    // the new screen and possibly create the view before all the properties are ready.
+    @ViewBuilder func view(for destination: Destination) -> some View {
         switch destination {
         case .number(let number):
-            guard let option = NumberOption(rawValue: number) else { fatalError("Invalid destination") }
+            if let option = NumberOption(rawValue: number) {
+                LazyView {
+                    let viewModel = DetailViewModel(option: option)
+                    let coordinator = DetailCoordinator(viewModel: viewModel)
 
-            return LazyView { () -> AnyView in
-                let viewModel = DetailViewModel(option: option)
-                let coordinator = DetailCoordinator(viewModel: viewModel)
-
-                return coordinator.start().eraseToAnyView()
+                    coordinator.start()
+                }
+            } else {
+                Text("Invalid destination")
             }
-            .eraseToAnyView()
         }
     }
 }

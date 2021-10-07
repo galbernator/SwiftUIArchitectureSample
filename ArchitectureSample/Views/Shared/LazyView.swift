@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct LazyView<Content: View>: View {
-    let build: (() -> Content)
+    @ViewBuilder var build: () -> Content
 
     var body: some View {
         build()

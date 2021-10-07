@@ -17,7 +17,7 @@ final class DetailCoordinator {
 
 extension DetailCoordinator: Coordinator {
     // Creates the initial view
-    func start() -> some View {
+    @ViewBuilder func start() -> some View {
         DetailView(viewModel: viewModel, coordinator: self)
     }
 

@@ -10,7 +10,6 @@ import SwiftUI
 struct HomeView: View {
     @ObservedObject var viewModel: HomeViewModel
     let coordinator: HomeCoordinator
-    @State private var selectedOption: NumberOption?
 
     var body: some View {
         ScrollView {
@@ -21,12 +20,9 @@ struct HomeView: View {
                     }
                 } else {
                     ForEach(viewModel.options, id: \.self) { option in
-                        NavigationLink(
-                            destination: coordinator.destination(for: option),
-                            tag: option,
-                            selection: $selectedOption,
-                            label: { HomeRow(option: option) }
-                        )
+                        NavigationLink(destination: coordinator.destination(for: option)) {
+                            HomeRow(option: option)
+                        }
                     }
                 }
 
